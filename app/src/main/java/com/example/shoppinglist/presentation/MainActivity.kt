@@ -31,6 +31,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         adapter = ShopListAdapter()
-        binding.recyclerViewShopItem.adapter = adapter
+        with (binding) {
+            recyclerViewShopItem.adapter = adapter
+            recyclerViewShopItem.recycledViewPool.setMaxRecycledViews(
+                ShopListAdapter.VIEW_TYPE_ENABLED, ShopListAdapter.MAX_POOL_SIZE
+            )
+            recyclerViewShopItem.recycledViewPool.setMaxRecycledViews(
+                ShopListAdapter.VIEW_TYPE_DISABLED, ShopListAdapter.MAX_POOL_SIZE
+            )
+        }
     }
 }
