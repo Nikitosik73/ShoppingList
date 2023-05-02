@@ -27,6 +27,9 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
             notifyDataSetChanged()
         }
 
+    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+    var onShopItemClickListener: ((ShopItem) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopListViewHolder {
         Log.d("ShopListAdapter", "ShopListAdapter, count: ${++count}")
         val layout = when(viewType) {
@@ -46,10 +49,14 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
         val shopItem = shopList[position]
 
         with(holder) {
-            holder.tvName.text = shopItem.name
-            holder.tvCount.text = shopItem.count.toString()
+            tvName.text = shopItem.name
+            tvCount.text = shopItem.count.toString()
             itemView.setOnLongClickListener {
+                onShopItemLongClickListener?.invoke(shopItem)
                 true
+            }
+            itemView.setOnClickListener {
+                onShopItemClickListener?.invoke(shopItem)
             }
         }
     }
@@ -72,6 +79,11 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
         holder.tvName.setTextColor(
             ContextCompat.getColor(holder.itemView.context, android.R.color.white)
         )
+    }
+
+    interface OnShopItemLongClickListener {
+
+        fun onShopItemClick(shopItem: ShopItem)
     }
 
     inner class ShopListViewHolder(itemView: View) : ViewHolder(itemView) {
