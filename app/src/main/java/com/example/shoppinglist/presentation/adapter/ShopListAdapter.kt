@@ -2,18 +2,16 @@ package com.example.shoppinglist.presentation.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView.Adapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.ListAdapter
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
-import com.example.shoppinglist.presentation.callback.ShopListDiffCallBack
+import com.example.shoppinglist.presentation.callback.ShopItemDiffCallBack
+import com.example.shoppinglist.presentation.viewholder.ShopListViewHolder
 
-class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
+class ShopListAdapter : ListAdapter<ShopItem, ShopListViewHolder>(
+    ShopItemDiffCallBack()
+) {
 
     companion object {
         const val VIEW_TYPE_ENABLED = 0
@@ -23,13 +21,6 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
     }
 
     var count = 0
-    var shopList = listOf<ShopItem>()
-        set(value) {
-            val callback = ShopListDiffCallBack(shopList, value)
-            val diffResult = DiffUtil.calculateDiff(callback)
-            diffResult.dispatchUpdatesTo(this)
-            field = value
-        }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
@@ -51,7 +42,7 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
 
     override fun onBindViewHolder(holder: ShopListViewHolder, position: Int) {
         Log.d("ShopListAdapter", "onBindViewHolder, count: ${++count}")
-        val shopItem = shopList[position]
+        val shopItem = getItem(position)
 
         with(holder) {
             tvName.text = shopItem.name
@@ -66,28 +57,12 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
         }
     }
 
-    override fun getItemCount() = shopList.size
-
     override fun getItemViewType(position: Int): Int {
-        val shopItem = shopList[position]
+        val shopItem = getItem(position)
         return if (shopItem.enabled) {
             VIEW_TYPE_ENABLED
         } else {
             VIEW_TYPE_DISABLED
         }
-    }
-
-    override fun onViewRecycled(holder: ShopListViewHolder) {
-        super.onViewRecycled(holder)
-        holder.tvName.text = ""
-        holder.tvCount.text = ""
-        holder.tvName.setTextColor(
-            ContextCompat.getColor(holder.itemView.context, android.R.color.white)
-        )
-    }
-
-    inner class ShopListViewHolder(itemView: View) : ViewHolder(itemView) {
-        val tvName = itemView.findViewById<TextView>(R.id.textViewShopItemName)
-        val tvCount = itemView.findViewById<TextView>(R.id.textViewShopItemCount)
     }
 }
