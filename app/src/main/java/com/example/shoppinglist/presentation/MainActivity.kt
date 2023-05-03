@@ -28,7 +28,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.shopList.observe(this) {
             Log.d("test_of_load_data", it.toString())
-            shopAdapter.shopList = it
+            // чтобы установить значения в ListAdapter нужно использовать метод submitList()
+            shopAdapter.submitList(it)
         }
     }
 
@@ -65,7 +66,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val shopItem = shopAdapter.shopList[position]
+                // чтобы получить позицию элемента нужно вызвать метод currentList
+                val shopItem = shopAdapter.currentList[position]
                 viewModel.removeShopItem(shopItem)
             }
         }
