@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.presentation.callback.ShopListDiffCallBack
 
 class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
 
@@ -23,15 +25,17 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
     var count = 0
     var shopList = listOf<ShopItem>()
         set(value) {
+            val callback = ShopListDiffCallBack(shopList, value)
+            val diffResult = DiffUtil.calculateDiff(callback)
+            diffResult.dispatchUpdatesTo(this)
             field = value
-            notifyDataSetChanged()
         }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopListViewHolder {
-        Log.d("ShopListAdapter", "ShopListAdapter, count: ${++count}")
+
         val layout = when(viewType) {
             VIEW_TYPE_ENABLED -> R.layout.shop_item_enabled
             VIEW_TYPE_DISABLED -> R.layout.shop_item_disabled
@@ -46,6 +50,7 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ShopListViewHolder, position: Int) {
+        Log.d("ShopListAdapter", "onBindViewHolder, count: ${++count}")
         val shopItem = shopList[position]
 
         with(holder) {
@@ -79,11 +84,6 @@ class ShopListAdapter : Adapter<ShopListAdapter.ShopListViewHolder>() {
         holder.tvName.setTextColor(
             ContextCompat.getColor(holder.itemView.context, android.R.color.white)
         )
-    }
-
-    interface OnShopItemLongClickListener {
-
-        fun onShopItemClick(shopItem: ShopItem)
     }
 
     inner class ShopListViewHolder(itemView: View) : ViewHolder(itemView) {
