@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.databinding.ActivityMainBinding
-import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.presentation.adapter.ShopListAdapter
 import com.example.shoppinglist.presentation.viewmodel.MainViewModel
 
@@ -31,11 +30,15 @@ class MainActivity : AppCompatActivity() {
             // чтобы установить значения в ListAdapter нужно использовать метод submitList()
             shopAdapter.submitList(it)
         }
+        binding.addShopItemButton.setOnClickListener {
+            val intent = ShopItemActivity.newIntentAddItem(this)
+            startActivity(intent)
+        }
     }
 
     private fun setupRecyclerView() {
         shopAdapter = ShopListAdapter()
-        with (binding) {
+        with(binding) {
             with(recyclerViewShopItem) {
                 adapter = shopAdapter
                 recycledViewPool.setMaxRecycledViews(
@@ -79,6 +82,11 @@ class MainActivity : AppCompatActivity() {
     private fun setupClick() {
         shopAdapter.onShopItemClickListener = {
             Log.d("ShowInfo on shopItem", it.toString())
+            val intent = ShopItemActivity.newIntentEditItem(
+                this@MainActivity,
+                it.id
+            )
+            startActivity(intent)
         }
     }
 
