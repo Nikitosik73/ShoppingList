@@ -4,4 +4,6 @@
     <string name="edit_name">Name:</string>
     <string name="edit_count">Count:</string>
     <string name="btn_save">Save</string>
+    <string name="error_edit_name">Некоректно заполнено поле Name</string>
+    <string name="error_edit_count">Некоректно заполнено поле Count</string>
 </resources>
